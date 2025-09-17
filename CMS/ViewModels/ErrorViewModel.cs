@@ -1,4 +1,4 @@
-namespace CMS.Models
+namespace CMS.ViewModels
 {
     public class ErrorViewModel
     {
