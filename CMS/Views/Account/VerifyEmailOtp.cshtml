@@ -1,0 +1,20 @@
+﻿@using CMS.ViewModels.AccountViewModels
+@model VerfiyEmailOTPViewModel
+@{
+    ViewData["Title"] = "VerifyEmailOtp";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<h2>Enter Code</h2>
+<form method="post">
+    <div class="mb-3">
+        <input type="hidden" name="email" value="@ViewBag.Email" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="OTP" class="form-label"></label>
+        <input asp-for="OTP" class="form-control" />
+        <span asp-validation-for="OTP" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Verfiy" class="btn btn-outline-primary w-100 p-2" />
+</form>
+
