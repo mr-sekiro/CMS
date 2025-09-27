@@ -8,5 +8,7 @@ namespace DataAccess.Models
         [Required]
         [StringLength(100)]
         public string FullName { get; set; }
+        public string? EmailOtp { get; set; }
+        public DateTime? OtpExpiryTime { get; set; }
     }
 }
