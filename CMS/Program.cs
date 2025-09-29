@@ -4,6 +4,7 @@ using DataAccess.Models;
 using DataAccess.Models.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CMS
 {
@@ -18,7 +19,10 @@ namespace CMS
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
+            });
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
