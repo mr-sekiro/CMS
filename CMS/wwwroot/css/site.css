@@ -32,6 +32,7 @@ body {
     color: var(--text-color);
 }
 
+/* --- NEW/REFACTORED LAYOUT CSS --- */
 #wrapper {
     /* This element has d-flex in the HTML */
     min-height: 100vh;
