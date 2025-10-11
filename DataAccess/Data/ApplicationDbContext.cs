@@ -25,6 +25,36 @@ namespace DataAccess.Data
 
             base.OnModelCreating(modelBuilder);
 
+            // --- Configure Many-to-Many for Project and User (Team Members) ---
+            modelBuilder.Entity<ProjectTeamMember>()
+                .HasKey(pt => new { pt.ProjectId, pt.UserId }); // Composite primary key
+
+            modelBuilder.Entity<ProjectTeamMember>()
+                .HasOne(pt => pt.Project)
+                .WithMany(p => p.TeamMembers)
+                .HasForeignKey(pt => pt.ProjectId);
+
+            modelBuilder.Entity<ProjectTeamMember>()
+                .HasOne(pt => pt.User)
+                .WithMany(u => u.ProjectAssignments)
+                .HasForeignKey(pt => pt.UserId);
+
+
+            // --- Configure One-to-Many for Project and User (Team Lead) ---
+            modelBuilder.Entity<Project>()
+                .HasOne(p => p.TeamLead)
+                .WithMany(u => u.LedProjects)
+                .HasForeignKey(p => p.TeamLeadId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents deleting a user if they are a team lead
+
+
+            // --- Configure One-to-Many for Task and User (Assigned To) ---
+            modelBuilder.Entity<TaskItem>()
+                .HasOne(t => t.AssignedTo)
+                .WithMany(u => u.AssignedTasks)
+                .HasForeignKey(t => t.AssignedToId)
+                .OnDelete(DeleteBehavior.SetNull); // If a user is deleted, set AssignedToId to null
+
             // Configure the decimal precision for the TimeLog.Hours property
             modelBuilder.Entity<TimeLog>(entity =>
             {

@@ -12,5 +12,10 @@ namespace DataAccess.Models
         public string ContactPerson { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+
+
+        // --- NAVIGATION PROPERTY ---
+        // A client can have many projects
+        public virtual ICollection<Project> Projects { get; set; } = new HashSet<Project>();
     }
 }

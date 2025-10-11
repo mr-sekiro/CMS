@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,16 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250927185504_Add-OTP")]
+    partial class AddOTP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.20")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -129,9 +129,6 @@ namespace DataAccess.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
@@ -144,9 +141,6 @@ namespace DataAccess.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -161,9 +155,6 @@ namespace DataAccess.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -175,32 +166,9 @@ namespace DataAccess.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("TeamLeadId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("TeamLeadId");
-
                     b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.ProjectTeamMember", b =>
-                {
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ProjectId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProjectTeamMember");
                 });
 
             modelBuilder.Entity("DataAccess.Models.TaskItem", b =>
@@ -210,9 +178,6 @@ namespace DataAccess.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssignedToId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -227,13 +192,7 @@ namespace DataAccess.Data.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -245,10 +204,6 @@ namespace DataAccess.Data.Migrations
                         .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssignedToId");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("Tasks");
                 });
@@ -277,21 +232,7 @@ namespace DataAccess.Data.Migrations
                     b.Property<decimal>("Hours")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TaskItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskItemId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TimeLogs");
                 });
@@ -429,81 +370,6 @@ namespace DataAccess.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccess.Models.Project", b =>
-                {
-                    b.HasOne("DataAccess.Models.Client", "Client")
-                        .WithMany("Projects")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Models.ApplicationUser", "TeamLead")
-                        .WithMany("LedProjects")
-                        .HasForeignKey("TeamLeadId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("TeamLead");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.ProjectTeamMember", b =>
-                {
-                    b.HasOne("DataAccess.Models.Project", "Project")
-                        .WithMany("TeamMembers")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Models.ApplicationUser", "User")
-                        .WithMany("ProjectAssignments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.TaskItem", b =>
-                {
-                    b.HasOne("DataAccess.Models.ApplicationUser", "AssignedTo")
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("AssignedToId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("DataAccess.Models.Project", "Project")
-                        .WithMany("Tasks")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssignedTo");
-
-                    b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.TimeLog", b =>
-                {
-                    b.HasOne("DataAccess.Models.TaskItem", "TaskItem")
-                        .WithMany("TimeLogs")
-                        .HasForeignKey("TaskItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Models.ApplicationUser", "User")
-                        .WithMany("TimeLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TaskItem");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -553,34 +419,6 @@ namespace DataAccess.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccess.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("AssignedTasks");
-
-                    b.Navigation("LedProjects");
-
-                    b.Navigation("ProjectAssignments");
-
-                    b.Navigation("TimeLogs");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.Client", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.Project", b =>
-                {
-                    b.Navigation("Tasks");
-
-                    b.Navigation("TeamMembers");
-                });
-
-            modelBuilder.Entity("DataAccess.Models.TaskItem", b =>
-                {
-                    b.Navigation("TimeLogs");
                 });
 #pragma warning restore 612, 618
         }
