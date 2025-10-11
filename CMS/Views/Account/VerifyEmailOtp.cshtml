@@ -1,20 +1,31 @@
 ﻿@using CMS.ViewModels.AccountViewModels
 @model VerfiyEmailOTPViewModel
 @{
-    ViewData["Title"] = "VerifyEmailOtp";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    ViewData["Title"] = "Verify Email OTP";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml"; // Assuming you have an account layout
 }
 
-<h2>Enter Code</h2>
+<h2 class="text-center mb-4">Enter Verification Code</h2>
+<p class="text-center text-muted mb-4">A 6-digit code has been sent to your email address.</p>
+
 <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
     <div class="mb-3">
         <input type="hidden" name="email" value="@ViewBag.Email" />
     </div>
     <div class="mb-3">
         <label asp-for="OTP" class="form-label"></label>
-        <input asp-for="OTP" class="form-control" />
+        <input asp-for="OTP" class="form-control" autofocus />
         <span asp-validation-for="OTP" class="text-danger"></span>
     </div>
-    <input type="submit" value="Verfiy" class="btn btn-outline-primary w-100 p-2" />
+    <div class="d-grid">
+        <input type="submit" value="Verify" class="btn btn-primary p-2" />
+    </div>
 </form>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}
