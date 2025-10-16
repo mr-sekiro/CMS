@@ -62,15 +62,15 @@ namespace CMS
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            //try
-            //{
-            //    await DbInitializer.Initialize(app.Services);
-            //}
-            //catch (Exception ex)
-            //{
-            //    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-            //    logger.LogError(ex, "An error occurred while seeding the database.");
-            //}
+            try
+            {
+                await DbInitializer.Initialize(app.Services);
+            }
+            catch (Exception ex)
+            {
+                var logger = app.Services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
+            }
 
             app.Run();
         }
